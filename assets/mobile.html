@@ -255,7 +255,7 @@
             // A. 단기예보 (0~3일)
             try {
                 // [APP 수정] Direct fetch
-                const urlS = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${API_KEY}&numOfRows=1000&pageNo=1&dataType=JSON&base_date=${shortBaseDate}&base_time=${shortBaseTime}&nx=${loc.nx}&ny=${loc.y}`;
+                const urlS = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${API_KEY}&numOfRows=1000&pageNo=1&dataType=JSON&base_date=${shortBaseDate}&base_time=${shortBaseTime}&nx=${loc.nx}&ny=${loc.ny}`;
                 const resS = await fetch(urlS); const jsonS = await resS.json();
                 
                 if(jsonS.response && jsonS.response.header.resultCode === '00'){
@@ -289,9 +289,8 @@
                 }
             } catch(e) { log(`Short API Error: ${e.message}`); }
 
-            // B. 중기예보 (4~10일)
+            // B. 중기예보 (3~10일) - 3일차부터 시작하여 데이터 공백 방지
             try {
-                // [APP 수정] Direct fetch
                 const urlT = `https://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${API_KEY}&numOfRows=1&pageNo=1&dataType=JSON&regId=${loc.regIdTemp}&tmFc=${midTmFc}`;
                 const resT = await fetch(urlT); const jsonT = await resT.json();
                 
@@ -302,16 +301,15 @@
                     const t = jsonT.response.body.items.item[0];
                     const l = jsonL.response.body.items.item[0];
                     
-                    log(`[Mid] Day4 Raw: Min=${t.taMin4}, Max=${t.taMax4}, WfPm=${l.wf4Pm}, WfAm=${l.wf4Am}`);
-
-                    for(let i=4; i<=10; i++) {
-                        let wf = l[`wf${i}Pm`] || l[`wf${i}Am`] || l[`wf${i}`];
-                        let pop = l[`rnSt${i}Pm`];
-                        if (pop === undefined) pop = l[`rnSt${i}Am`];
-                        if (pop === undefined) pop = l[`rnSt${i}`];
+                    for(let i=3; i<=10; i++) {
+                        // wf와 pop 추출 시 Am/Pm 값이 없으면 전체 값 또는 이전 값으로 Fallback
+                        let wf = l[`wf${i}Pm`] || l[`wf${i}Am`] || l[`wf${i}`] || (i === 3 ? combinedData[3]?.wf : "맑음");
+                        let pop = l[`rnSt${i}Pm`] ?? l[`rnSt${i}Am`] ?? l[`rnSt${i}`] ?? (i === 3 ? combinedData[3]?.pop : 0);
+                        let minT = t[`taMin${i}`] ?? t[`taMin${i-1}`];
+                        let maxT = t[`taMax${i}`] ?? t[`taMax${i-1}`];
                         
                         combinedData[i] = {
-                            min: t[`taMin${i}`], max: t[`taMax${i}`],
+                            min: minT, max: maxT,
                             wf: wf, pop: pop
                         };
                     }
