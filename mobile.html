@@ -275,8 +275,8 @@
                             const d = hourly[h] || {};
                             let icon = '☀️';
                             const pty=parseInt(d.PTY||0), sky=parseInt(d.SKY||1);
-                            if(pty>0) icon=(pty===3)?'❄️':'🌧️'; else if(sky>8) icon='☁️'; else if(sky>5) icon='⛅';
-                            if(h>=19 && (icon==='☀️'||icon==='⛅')) icon='🌙';
+                            if(pty>0) icon=(pty===3)?'❄️':'🌧️'; else if(sky===4) icon='☁️'; else if(sky===3) icon='🌤️';
+                            if(h>=19 && (icon==='☀️'||icon==='🌤️')) icon='🌙';
 
                             let pcp = d.PCP || '0';
                             if (pcp === "강수없음") pcp = "0mm";
