@@ -50,27 +50,23 @@ export default function App() {
       if (!status?.granted) {
         const permission = await requestPermission();
         if (!permission.granted) {
-          Alert.alert("Permission required", "Please allow access to media library to save screenshots.");
+          Alert.alert('권한 필요', '갤러리 저장을 위해 미디어 라이브러리 접근을 허용해주세요.');
           return;
         }
       }
 
       const uri = await captureRef(viewShotRef, {
-        format: "png",
+        format: 'png',
         quality: 1,
-        result: "tmpfile",
+        result: 'tmpfile',
       });
 
-      const manipResult = await ImageManipulator.manipulateAsync(
-        uri,
-        [],
-        { useNativeDriver: false }
-      );
-      
+      // 이미지 크기 확인
+      const manipResult = await ImageManipulator.manipulateAsync(uri, []);
       const { width, height } = manipResult;
       const currentRatio = width / height;
       const targetRatio = 9 / 16;
-      
+
       let actions = [];
       if (Math.abs(currentRatio - targetRatio) > 0.01) {
           let originX = 0;
@@ -85,13 +81,13 @@ export default function App() {
               cropHeight = width / targetRatio;
               originY = (height - cropHeight) / 2;
           }
-          
+
           actions.push({
               crop: {
-                  originX,
-                  originY,
-                  width: cropWidth,
-                  height: cropHeight,
+                  originX: Math.round(originX),
+                  originY: Math.round(originY),
+                  width: Math.round(cropWidth),
+                  height: Math.round(cropHeight),
               }
           });
       }
@@ -103,10 +99,10 @@ export default function App() {
       );
 
       await MediaLibrary.saveToLibraryAsync(finalResult.uri);
-      Alert.alert("Captured!", "Screenshot saved to gallery (9:16).");
+      Alert.alert('저장 완료!', '갤러리에 9:16 비율로 저장되었습니다.');
     } catch (e) {
       console.error(e);
-      Alert.alert("Error", "Failed to capture screen.");
+      Alert.alert('오류', '캡처에 실패했습니다: ' + e.message);
     }
   };
 
@@ -132,20 +128,20 @@ export default function App() {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         const uri = await captureRef(viewShotRef, {
-          format: "png",
+          format: 'png',
           quality: 1,
-          result: "tmpfile",
+          result: 'tmpfile',
         });
         
-        const manipResult = await ImageManipulator.manipulateAsync(uri, [], { useNativeDriver: false });
+        const manipResult = await ImageManipulator.manipulateAsync(uri, []);
         const { width, height } = manipResult;
         const targetRatio = 9 / 16;
         let actions = [];
 
         if (Math.abs((width / height) - targetRatio) > 0.01) {
-            let cropWidth = height * targetRatio;
-            let originX = (width - cropWidth) / 2;
-            actions.push({ crop: { originX: Math.round(originX), originY: 0, width: Math.round(cropWidth), height: height } });
+            let cropWidth = Math.round(height * targetRatio);
+            let originX = Math.round((width - cropWidth) / 2);
+            actions.push({ crop: { originX, originY: 0, width: cropWidth, height: height } });
         }
         
         const finalResult = await ImageManipulator.manipulateAsync(
