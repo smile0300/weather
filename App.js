@@ -207,8 +207,8 @@ export default function App() {
           }
         }
 
-        // 기상청 및 한라산 API 호출을 네이티브로 토스 (CORS 우회)
-        if (url.includes('apis.data.go.kr') || url.includes('jeju.go.kr')) {
+        // 기상청, 한라산, 공항 API 호출을 네이티브로 토스 (CORS 우회)
+        if (url.includes('apis.data.go.kr') || url.includes('jeju.go.kr') || url.includes('airport.co.kr')) {
           return new Promise((resolve, reject) => {
             const reqId = Math.random().toString(36).substring(7);
             window.fetchCallbacks[reqId] = { resolve, reject };
@@ -243,11 +243,17 @@ export default function App() {
           // 안전한 문자열 전달을 위해 JSON.stringify 사용
           const serializedText = JSON.stringify(responseText);
 
+          // 응답 헤더 추출 (WebView의 Response 객체 생성을 위해)
+          const respHeaders = {};
+          response.headers.forEach((value, key) => {
+            respHeaders[key] = value;
+          });
+
           const jsCode = `
             if (window.fetchCallbacks['${data.reqId}']) {
               const res = new Response(${serializedText}, {
                 status: ${response.status},
-                headers: { 'Content-Type': 'application/json' }
+                headers: ${JSON.stringify(respHeaders)}
               });
               window.fetchCallbacks['${data.reqId}'].resolve(res);
               delete window.fetchCallbacks['${data.reqId}'];
