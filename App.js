@@ -4,6 +4,7 @@ import { WebView } from 'react-native-webview';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
 import * as ImageManipulator from 'expo-image-manipulator';
+import MOBILE_HTML from './mobileHtml';
 
 // [중요] GitHub Pages의 최신 코드를 가져올 주소
 const WEB_URL = 'https://smile0300.github.io/weather/mobile.html';
@@ -23,7 +24,7 @@ const FALLBACK_HTML = `
 export default function App() {
   const webviewRef = useRef(null);
   const viewShotRef = useRef(null);
-  const [htmlContent, setHtmlContent] = useState(FALLBACK_HTML);
+  const [htmlContent, setHtmlContent] = useState(MOBILE_HTML);
   const [status, requestPermission] = MediaLibrary.usePermissions();
 
   useEffect(() => {
@@ -38,12 +39,11 @@ export default function App() {
           const text = await response.text();
           setHtmlContent(text);
         } else {
-          console.error("Failed to load remote HTML (Status):", response.status);
-          // 실패 시 기존 백업 HTML(FALLBACK_HTML) 유지
+          console.error("Failed to update remote HTML (Status):", response.status);
+          // 실패 시 번들된 HTML(또는 이전 상태) 유지
         }
       } catch (error) {
-        console.error("Failed to load remote HTML:", error);
-        // 실패 시 기존 백업 HTML 유지 (또는 에러 메시지 표시)
+        console.error("Failed to update remote HTML:", error);
       }
     };
 
