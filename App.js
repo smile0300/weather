@@ -4,11 +4,6 @@ import { WebView } from 'react-native-webview';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
 import * as ImageManipulator from 'expo-image-manipulator';
-import MOBILE_HTML from './mobileHtml';
-
-// [중요] GitHub Pages의 최신 코드를 가져올 주소
-const WEB_URL = 'https://smile0300.github.io/weather/mobile.html';
-
 // [기본] 네트워크 에러 시 사용할 백업 HTML
 const FALLBACK_HTML = `
 <!DOCTYPE html>
@@ -16,7 +11,7 @@ const FALLBACK_HTML = `
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Loading...</title></head>
 <body style="display:flex;justify-content:center;align-items:center;height:100vh;background:#f0f2f5;font-family:sans-serif;flex-direction:column;">
     <div style="font-size:18px;font-weight:bold;color:#333;margin-bottom:10px;">날씨 정보를 불러오는 중입니다...</div>
-    <div style="font-size:14px;color:#666;">잠시만 기다려주세요.</div>
+    <div style="font-size:14px;color:#666;">(데이터를 가져오는 중이거나 오프라인 상태입니다)</div>
 </body>
 </html>
 `;
@@ -24,26 +19,22 @@ const FALLBACK_HTML = `
 export default function App() {
   const webviewRef = useRef(null);
   const viewShotRef = useRef(null);
-  const [htmlContent, setHtmlContent] = useState(MOBILE_HTML);
+  const [htmlContent, setHtmlContent] = useState(FALLBACK_HTML);
   const [status, requestPermission] = MediaLibrary.usePermissions();
 
   useEffect(() => {
-    // 앱 시작 시 최신 HTML 코드를 다운로드 (Hot Code Push 방식)
+    // 앱 시작 시 GitHub에서 최신 HTML을 가져옵니다.
     const fetchLatestHtml = async () => {
       try {
-        // [수정] 강력한 캐시 방지 옵션 추가
-        const response = await fetch(WEB_URL + '?t=' + new Date().getTime(), {
-          headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
-        });
+        const response = await fetch('https://raw.githubusercontent.com/k97460300-coder/weather/main/web_source/mobile_corrected.html');
         if (response.ok) {
-          const text = await response.text();
-          setHtmlContent(text);
+          const html = await response.text();
+          setHtmlContent(html);
         } else {
-          console.error("Failed to update remote HTML (Status):", response.status);
-          // 실패 시 번들된 HTML(또는 이전 상태) 유지
+          console.warn('Failed to fetch from GitHub. Using fallback.');
         }
       } catch (error) {
-        console.error("Failed to update remote HTML:", error);
+        console.error('Fetch error:', error);
       }
     };
 
@@ -121,7 +112,7 @@ export default function App() {
         }
       }
 
-      const cardCount = 9;
+      const cardCount = 6;
       Alert.alert("Starting Capture", `Capturing all ${cardCount} cards, please wait...`);
 
       for (let i = 0; i < cardCount; i++) {
@@ -184,7 +175,7 @@ export default function App() {
       // CORS 경고창 숨기기
       try {
         const style = document.createElement('style');
-        style.innerHTML = '.cors-alert { display: none !important; }';
+        style.styleSheet ? (style.styleSheet.cssText = '.cors-alert { display: none !important; }') : style.appendChild(document.createTextNode('.cors-alert { display: none !important; }'));
         document.head.appendChild(style);
       } catch(e) {}
 
@@ -198,7 +189,8 @@ export default function App() {
         const proxies = [
           'https://api.allorigins.win/raw?url=',
           'https://cors-anywhere.herokuapp.com/',
-          'https://api.allorigins.win/get?url='
+          'https://api.allorigins.win/get?url=',
+          'https://api.allorigins.win/raw?url=' // 중복 제거 및 확실히 처리
         ];
 
         for (const proxy of proxies) {
@@ -207,20 +199,25 @@ export default function App() {
           }
         }
 
-        // 기상청, 한라산, 공항 API 호출을 네이티브로 토스 (CORS 우회)
-        if (url.includes('apis.data.go.kr') || url.includes('jeju.go.kr') || url.includes('airport.co.kr')) {
+        // 외부 API 호출 (apis.data.go.kr, jeju.go.kr, airport.co.kr 등)을 네이티브로 토스
+        const isExternalApi = url.startsWith('http') && (
+          url.includes('apis.data.go.kr') || 
+          url.includes('jeju.go.kr') || 
+          url.includes('airport.co.kr') ||
+          url.includes('allorigins.win') // 혹시 안걸러진 경우 대비
+        );
+
+        if (isExternalApi && window.ReactNativeWebView) {
           return new Promise((resolve, reject) => {
             const reqId = Math.random().toString(36).substring(7);
             window.fetchCallbacks[reqId] = { resolve, reject };
 
-            if (window.ReactNativeWebView) {
-              window.ReactNativeWebView.postMessage(JSON.stringify({
-                type: 'FETCH_REQUEST',
-                reqId: reqId,
-                url: url,
-                options: init
-              }));
-            }
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              type: 'FETCH_REQUEST',
+              reqId: reqId,
+              url: url,
+              options: init
+            }));
           });
         }
 
@@ -237,7 +234,14 @@ export default function App() {
       if (data.type === 'FETCH_REQUEST') {
         try {
           // [수정] 네이티브에서 직접 fetch 수행 (CORS 영향 없음)
-          const response = await fetch(data.url, data.options);
+          // 일부 공공 API는 브라우저 User-Agent가 아니면 차단할 수 있으므로 헤더 추가
+          const response = await fetch(data.url, {
+            ...data.options,
+            headers: {
+              ...((data.options && data.options.headers) || {}),
+              'User-Agent': 'Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36'
+            }
+          });
           const responseText = await response.text();
 
           // 안전한 문자열 전달을 위해 JSON.stringify 사용
