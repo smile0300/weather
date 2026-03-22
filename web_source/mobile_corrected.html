@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>제주도 날씨 실시간 정보</title>
+    <title>济州岛天气实时信息</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
@@ -91,25 +91,25 @@
         <div class="card">
             <div class="card-inner" style="background:#000;">
                 <div class="card-header" style="background:#ff5252; color:#fff; border:none;">
-                    🔴 제주 실시간 CCTV (Live)
+                    🔴 济州实时监控 (Live)
                 </div>
                 <!-- CCTV Warning for HTTPS -->
                 <div id="cctv-warning" style="display:none; background:#333; color:#ffbd2e; padding:8px; font-size:11px; text-align:center; font-weight:bold;">
-                    ⚠️ 브라우저 보안 정책으로 인해 앱(APK)에서만 보일 수 있습니다.
+                    ⚠️ 由于浏览器安全政策，可能仅在应用 (APK) 中可见。
                 </div>
                 <div class="card-content">
-                    <div class="video-box"><div class="live-tag">LIVE</div><div class="vid-label">🏝️ 우도 (항구)</div><video id="v1" autoplay muted playsinline></video></div>
-                    <div class="video-box"><div class="live-tag">LIVE</div><div class="vid-label">🏔️ 한라산 (윗세오름)</div><video id="v2" autoplay muted playsinline></video></div>
-                    <div class="video-box"><div class="live-tag">LIVE</div><div class="vid-label">🛣️ 1100고지</div><video id="v3" autoplay muted playsinline></video></div>
+                    <div class="video-box"><div class="live-tag">LIVE</div><div class="vid-label">🏝️ 牛岛 (港口)</div><video id="v1" autoplay muted playsinline></video></div>
+                    <div class="video-box"><div class="live-tag">LIVE</div><div class="vid-label">🏔️ 汉拿山 (御里牧/威势岳)</div><video id="v2" autoplay muted playsinline></video></div>
+                    <div class="video-box"><div class="live-tag">LIVE</div><div class="vid-label">🛣️ 1100高地</div><video id="v3" autoplay muted playsinline></video></div>
                 </div>
             </div>
         </div>
         <!-- Card 2: Daily Forecast 1/2 -->
         <div class="card">
             <div class="card-inner">
-                <div class="card-header">☀️ 오늘 시간별 예보 (오전/오후) <span class="badge" id="date-label"></span></div>
+                <div class="card-header">☀️ 今日逐时预报 (上午/下午) <span class="badge" id="date-label"></span></div>
                 <div class="card-content" id="daily-list-1">
-                    <div style="padding:40px; text-align:center; color:#999; font-size:12px;">날씨 데이터를 불러오는 중...</div>
+                    <div style="padding:40px; text-align:center; color:#999; font-size:12px;">正在加载天气数据...</div>
                 </div>
             </div>
         </div>
@@ -117,9 +117,9 @@
         <!-- Card 3: Daily Forecast 2/2 -->
         <div class="card">
             <div class="card-inner">
-                <div class="card-header">☀️ 오늘 시간별 예보 (저녁/밤) <span class="badge" id="date-label-2"></span></div>
+                <div class="card-header">☀️ 今日逐时预报 (晚上) <span class="badge" id="date-label-2"></span></div>
                 <div class="card-content" id="daily-list-2">
-                    <div style="padding:40px; text-align:center; color:#999; font-size:12px;">날씨 데이터를 불러오는 중...</div>
+                    <div style="padding:40px; text-align:center; color:#999; font-size:12px;">正在加载天气数据...</div>
                 </div>
             </div>
         </div>
@@ -127,7 +127,7 @@
         <!-- Card 4: Weekly Forecast 1/2 -->
         <div class="card">
             <div class="card-inner">
-                <div class="card-header">📅 10일 장기 예보 (초반) <span class="badge" id="weekly-status-1">Updating</span></div>
+                <div class="card-header">📅 10天长期预报 (前半段) <span class="badge" id="weekly-status-1">Updating</span></div>
                 <div class="card-content" id="weekly-list-1">
                     <div style="padding:40px; text-align:center; color:#999; font-size:12px;">주간 데이터를 불러오고 있습니다...</div>
                 </div>
@@ -137,7 +137,7 @@
         <!-- Card 5: Weekly Forecast 2/2 -->
         <div class="card">
             <div class="card-inner">
-                <div class="card-header">📅 10일 장기 예보 (후반) <span class="badge" id="weekly-status-2">Updating</span></div>
+                <div class="card-header">📅 10天长期预报 (后半段) <span class="badge" id="weekly-status-2">Updating</span></div>
                 <div class="card-content" id="weekly-list-2">
                     <div style="padding:40px; text-align:center; color:#999; font-size:12px;">주간 데이터를 불러오고 있습니다...</div>
                 </div>
@@ -147,11 +147,11 @@
         <!-- Card 6: Hallasan Status -->
         <div class="card">
             <div class="card-inner">
-                <div class="card-header">🏔️ 한라산 등반로 통제 현황 <span class="badge" id="hallasan-status">Checking</span></div>
+                <div class="card-header">🏔️ 汉拿山登山路管制现状 <span class="badge" id="hallasan-status">Checking</span></div>
                 <div class="card-content" id="hallasan-list">
                     <div style="padding:20px; text-align:center; color:#999; font-size:12px;">실시간 정보를 가져오고 있습니다...</div>
                 </div>
-                <footer>기상청 및 제주도청 공공데이터 포털 제공</footer>
+                <footer>由气象厅及济州道厅公共数据门户提供</footer>
             </div>
         </div>
     </div>
@@ -174,7 +174,7 @@
         const dd = String(now.getDate()).padStart(2,'0');
         const todayStr = yyyy + mm + dd;
         
-        const dateText = (now.getMonth()+1) + '월 ' + now.getDate() + '일';
+        const dateText = (now.getMonth()+1) + '月 ' + now.getDate() + '日';
         document.getElementById('date-label').innerText = dateText;
         if (document.getElementById('date-label-2')) {
             document.getElementById('date-label-2').innerText = dateText;
@@ -217,10 +217,10 @@
 
         async function initDaily() {
             const locs = [
-                {n:"제주시 (연동)", sub:"Yeon-dong", x:52, y:38},
-                {n:"서귀포 (중문)", sub:"Jungmun", x:52, y:32},
-                {n:"한라산 (어리목)", sub:"Halla Mountain", x:52, y:35},
-                {n:"우도", sub:"Udo Island", x:60, y:38}
+                {n:"济州市 (莲洞)", sub:"Yeon-dong", x:52, y:38},
+                {n:"西归浦 (中文)", sub:"Jungmun", x:52, y:32},
+                {n:"汉拿山 (御里牧)", sub:"Halla Mountain", x:52, y:35},
+                {n:"牛岛", sub:"Udo Island", x:60, y:38}
             ];
             
             const b = getLatestBase();
@@ -275,16 +275,16 @@
         async function initWeekly() {
             const container1 = document.getElementById('weekly-list-1');
             const container2 = document.getElementById('weekly-list-2');
-            if (document.getElementById('weekly-status-1')) document.getElementById('weekly-status-1').innerText = "업데이트 중";
-            if (document.getElementById('weekly-status-2')) document.getElementById('weekly-status-2').innerText = "업데이트 중";
+            if (document.getElementById('weekly-status-1')) document.getElementById('weekly-status-1').innerText = "更新中";
+            if (document.getElementById('weekly-status-2')) document.getElementById('weekly-status-2').innerText = "更新中";
             container1.innerHTML = '';
             container2.innerHTML = '';
             
             const locs = [
-                { name: "제주시", sub: "Jeju City", regIdTemp: '11G00201', regIdLand: '11G00000', nx:52, ny:38 },
-                { name: "서귀포", sub: "Seogwipo", regIdTemp: '11G00401', regIdLand: '11G00000', nx:52, ny:32 },
-                { name: "한라산", sub: "Halla Mt", regIdTemp: '11G00401', regIdLand: '11G00000', nx:52, ny:35 },
-                { name: "우도", sub: "Udo Island", regIdTemp: '11G00302', regIdLand: '11G00000', nx:60, ny:38 }
+                { name: "济州市", sub: "Jeju City", regIdTemp: '11G00201', regIdLand: '11G00000', nx:52, ny:38 },
+                { name: "西归浦", sub: "Seogwipo", regIdTemp: '11G00401', regIdLand: '11G00000', nx:52, ny:32 },
+                { name: "汉拿山", sub: "Halla Mt", regIdTemp: '11G00401', regIdLand: '11G00000', nx:52, ny:35 },
+                { name: "牛岛", sub: "Udo Island", regIdTemp: '11G00302', regIdLand: '11G00000', nx:60, ny:38 }
             ];
 
             const b = getLatestBase();
@@ -339,12 +339,12 @@
                                     const hourData = t.hourlyData[h] || {};
                                     const pty = parseInt(hourData.PTY || 0), sky = parseInt(hourData.SKY || 1), pop = parseInt(hourData.POP || 0);
                                     if (pop > maxPop) maxPop = pop;
-                                    let wk = '맑음';
-                                    if (pty > 0) wk = (pty === 3) ? '눈' : '비';
-                                    else { if (sky === 4) wk = '흐림'; else if (sky === 3) wk = '구름많음'; }
+                                    let wk = '晴';
+                                    if (pty > 0) wk = (pty === 3) ? '雪' : '雨';
+                                    else { if (sky === 4) wk = '阴'; else if (sky === 3) wk = '多云主'; }
                                     weatherCounts[wk] = (weatherCounts[wk] || 0) + 1;
                                 }
-                                let dominant = "맑음", mc = 0;
+                                let dominant = "晴", mc = 0;
                                 for (const w in weatherCounts) { if (weatherCounts[w] > mc) { mc = weatherCounts[w]; dominant = w; } }
                                 combinedData[i] = { min: t.min, max: t.max, wf: dominant, pop: maxPop };
                             }
@@ -380,17 +380,17 @@
                     const w = combinedData[i] || { wf: '-', min: '-', max: '-', pop: 0 };
                     
                     let icon = '☀️';
-                    if(w.wf.includes('흐림')) icon='☁️';
-                    else if(w.wf.includes('구름') || w.wf.includes('많음')) icon='⛅';
-                    else if(w.wf.includes('비')) icon='🌧️';
-                    else if(w.wf.includes('눈')) icon='❄️';
+                    if(w.wf.includes('阴')) icon='☁️';
+                    else if(w.wf.includes('多云') || w.wf.includes('主')) icon='⛅';
+                    else if(w.wf.includes('雨')) icon='🌧️';
+                    else if(w.wf.includes('雪')) icon='❄️';
 
                     html += `<div class="col"><div class="time">${label}<br><span style="font-size:9px; color:#aaa;">+${i}D</span></div><div class="icon">${icon}</div><div class="temp"><span class="high">${w.max}</span>/<span class="low">${w.min}</span></div><div class="precip ${w.pop>0?'precip-blue':''}">${w.pop}%</div></div>`;
                 }
                 targetContainer.innerHTML += `<div class="weather-section"><div class="loc-info"><span class="loc-name">${loc.name}</span><span class="loc-sub">${loc.sub}</span></div><div class="grid weekly-grid">${html}</div></div>`;
             }
-            if (document.getElementById('weekly-status-1')) document.getElementById('weekly-status-1').innerText = "업데이트 완료";
-            if (document.getElementById('weekly-status-2')) document.getElementById('weekly-status-2').innerText = "업데이트 완료";
+            if (document.getElementById('weekly-status-1')) document.getElementById('weekly-status-1').innerText = "更新完成";
+            if (document.getElementById('weekly-status-2')) document.getElementById('weekly-status-2').innerText = "更新完成";
         }
 
         function initCCTV() {
@@ -501,20 +501,20 @@
             const doc = parser.parseFromString(text, 'text/html');
             
             const trails = [
-                { id: '어리목', name: '한라산 (어리목)' },
-                { id: '영실', name: '영실 (Yeongsil)' },
-                { id: '어승생악', name: '어승생악' },
-                { id: '돈내코', name: '돈내코' },
-                { id: '석굴암', name: '석굴암' },
-                { id: '관음사', name: '관음사 (백록담)' },
-                { id: '성판악', name: '성판악 (백록담)' }
+                { id: '어리목', name: '汉拿山 (御里牧)' },
+                { id: '영실', name: '灵室 (Yeongsil)' },
+                { id: '어승생악', name: '御乘生岳' },
+                { id: '돈내코', name: '顿乃克' },
+                { id: '석굴암', name: '石窟庵' },
+                { id: '관음사', name: '观音寺 (白鹿潭)' },
+                { id: '성판악', name: '城板岳 (白鹿潭)' }
             ];
 
             const getStatusCN = (st) => {
-                if(st === '정상') return { t:'🟢 정상운행', c:'#4caf50' }; 
-                if(st === '부분') return { t:'🟡 부분통제', c:'#ff9800' };
-                if(st === '통제') return { t:'🔴 전면통제', c:'#f44336' }; 
-                return { t:'⚪ 정보없음', c:'#999' }; 
+                if(st === '정상') return { t:'🟢 正常通行', c:'#4caf50' }; 
+                if(st === '부분') return { t:'🟡 部分管制', c:'#ff9800' };
+                if(st === '통제') return { t:'🔴 全面管制', c:'#f44336' }; 
+                return { t:'⚪ 信息未知', c:'#999' }; 
             };
 
             let html = `<div style="padding: 10px;">`; 
@@ -544,7 +544,7 @@
                     <a href="https://jeju.go.kr/hallasan/index.htm" target="_blank" 
                        style="display:flex; align-items:center; justify-content:center; gap:5px; width:100%; background:#4a69bd; color:white; text-decoration:none; 
                               padding:12px 0; border-radius:8px; text-align:center; font-weight:bold; font-size:13px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
-                        🌐 한라산국립공원 홈페이지
+                        🌐 汉拿山国立公园官网
                     </a>
                 </div>`;
             container.innerHTML = html;

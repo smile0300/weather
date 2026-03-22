@@ -23,7 +23,7 @@
         }
         .container {
              display: flex; flex-direction: row; height: 100%;
-             width: 800vw; /* 8 cards */
+             width: 600vw; /* 6 cards */
         }
         .card {
             flex: 0 0 100vw;
@@ -48,17 +48,6 @@
             background: #fff; padding: 12px 15px; border-bottom: 1px solid #eee;
             font-weight: 800; font-size: 16px; color: #1a1a1a; display: flex; justify-content: space-between; align-items: center;
             flex-shrink: 0; /* Prevent header from shrinking */
-        }
-        .refresh-icon {
-            cursor: pointer;
-            margin-left: 8px;
-            font-size: 14px;
-            color: #666;
-            transition: transform 0.3s ease;
-        }
-        .refresh-icon:hover {
-            transform: rotate(30deg);
-            color: #333;
         }
         .card-content {
             flex-grow: 1; /* Allow content to fill available space */
@@ -94,21 +83,6 @@
         .precip-blue { color: #1e88e5; font-weight: bold; }
 
         footer { text-align: center; padding: 20px 10px; font-size: 11px; color: #999; }
-        .flight-remark { font-size:11px; font-weight:bold; }
-        .flight-details {
-            flex-grow: 1;
-            flex-shrink: 1;
-            min-width: 0;
-            word-break: break-word;
-        }
-        .flight-status-container {
-            flex-shrink: 0;
-            margin-left: 10px; /* Add some space between details and status */
-        }
-        /* Ensure flight ID and route can wrap if needed */
-        .flight-id-container, .flight-route {
-            word-break: break-word;
-        }
     </style>
 </head>
 <body>
@@ -137,7 +111,7 @@
         <!-- Card 3: Daily Forecast 2/2 -->
         <div class="card">
             <div class="card-inner">
-                <div class="card-header">☀️ 今日逐时预报 (2/2) <span class="badge" id="date-label-2"></span></div>
+                <div class="card-header">☀️ 今日逐时预보 (2/2) <span class="badge" id="date-label-2"></span></div>
                 <div class="card-content" id="daily-list-2">
                     <div style="padding:40px; text-align:center; color:#999; font-size:12px;">正在获取实时天气数据...</div>
                 </div>
@@ -147,9 +121,9 @@
         <!-- Card 4: Weekly Forecast 1/2 -->
         <div class="card">
             <div class="card-inner">
-                <div class="card-header">📅 未来10天长期预报 (1/2) <span class="badge" id="weekly-status-1">更新中</span></div>
+                <div class="card-header">📅 未来10天长期预报 (1/2) <span class="badge" id="weekly-status-1">Updating</span></div>
                 <div class="card-content" id="weekly-list-1">
-                    <div style="padding:40px; text-align:center; color:#999; font-size:12px;">正在获取长期预报数据...</div>
+                    <div style="padding:40px; text-align:center; color:#999; font-size:12px;">正在获取长期预보 데이터...</div>
                 </div>
             </div>
         </div>
@@ -157,9 +131,9 @@
         <!-- Card 5: Weekly Forecast 2/2 -->
         <div class="card">
             <div class="card-inner">
-                <div class="card-header">📅 未来10天长期预报 (2/2) <span class="badge" id="weekly-status-2">更新中</span></div>
+                <div class="card-header">📅 未来10天长期预报 (2/2) <span class="badge" id="weekly-status-2">Updating</span></div>
                 <div class="card-content" id="weekly-list-2">
-                    <div style="padding:40px; text-align:center; color:#999; font-size:12px;">正在获取长期预报数据...</div>
+                    <div style="padding:40px; text-align:center; color:#999; font-size:12px;">正在获取长期预보 데이터...</div>
                 </div>
             </div>
         </div>
@@ -167,33 +141,11 @@
         <!-- Card 6: Hallasan Status -->
         <div class="card">
             <div class="card-inner">
-                <div class="card-header">🏔️ 汉拿山探访路管制信息 <span class="badge" id="hallasan-status">查询中</span></div>
+                <div class="card-header">🏔️ 汉拿山探访路管制信息 <span class="badge" id="hallasan-status">Checking</span></div>
                 <div class="card-content" id="hallasan-list">
-                    <div style="padding:20px; text-align:center; color:#999; font-size:12px;">正在获取实时管制信息...</div>
+                    <div style="padding:20px; text-align:center; color:#999; font-size:12px;">正在获取实时管制 정보...</div>
                 </div>
                 <footer>Data provided by Korea Meteorological Administration</footer>
-            </div>
-        </div>
-
-        <!-- Card 7: Flight Departures -->
-        <div class="card">
-            <div class="card-inner">
-                <div class="card-header">✈️ 国际线出发信息 <span class="badge" id="flight-dep-status">更新中</span> <span class="refresh-icon" onclick="refreshDepartureFlights()">🔄</span></div>
-                <div class="card-content" id="flight-list-dep">
-                    <div style="padding:40px; text-align:center; color:#999; font-size:12px;">正在获取出发信息...</div>
-                </div>
-                 <footer>Data provided by Korea Airports Corporation</footer>
-            </div>
-        </div>
-        
-        <!-- Card 8: Flight Arrivals -->
-        <div class="card">
-            <div class="card-inner">
-                <div class="card-header">✈️ 国际线到达信息 <span class="badge" id="flight-arr-status">更新中</span> <span class="refresh-icon" onclick="refreshArrivalFlights()">🔄</span></div>
-                <div class="card-content" id="flight-list-arr">
-                    <div style="padding:40px; text-align:center; color:#999; font-size:12px;">正在获取到达信息...</div>
-                </div>
-                 <footer>Data provided by Korea Airports Corporation</footer>
             </div>
         </div>
     </div>
@@ -228,7 +180,6 @@
             const d = ('0' + date.getDate()).slice(-2);
             return y + '' + m + '' + d;
         }
-
 
         async function initDaily() {
             const locs = [
@@ -275,8 +226,8 @@
                             const d = hourly[h] || {};
                             let icon = '☀️';
                             const pty=parseInt(d.PTY||0), sky=parseInt(d.SKY||1);
-                            if(pty>0) icon=(pty===3)?'❄️':'🌧️'; else if(sky===4) icon='☁️'; else if(sky===3) icon='🌤️';
-                            if(h>=19 && (icon==='☀️'||icon==='🌤️')) icon='🌙';
+                            if(pty>0) icon=(pty===3)?'❄️':'🌧️'; else if(sky>8) icon='☁️'; else if(sky>5) icon='⛅';
+                            if(h>=19 && (icon==='☀️'||icon==='⛅')) icon='🌙';
 
                             let pcp = d.PCP || '0';
                             if (pcp === "강수없음") pcp = "0mm";
@@ -294,8 +245,8 @@
         async function initWeekly() {
             const container1 = document.getElementById('weekly-list-1');
             const container2 = document.getElementById('weekly-list-2');
-            if (document.getElementById('weekly-status-1')) document.getElementById('weekly-status-1').innerText = "更新中";
-            if (document.getElementById('weekly-status-2')) document.getElementById('weekly-status-2').innerText = "更新中";
+            if (document.getElementById('weekly-status-1')) document.getElementById('weekly-status-1').innerText = "Updating";
+            if (document.getElementById('weekly-status-2')) document.getElementById('weekly-status-2').innerText = "Updating";
             container1.innerHTML = '';
             container2.innerHTML = '';
             
@@ -442,7 +393,7 @@
                     const maxT = (w.max !== undefined && w.max !== -100) ? w.max : '-';
                     const pop = (w.pop !== undefined) ? w.pop : 0;
 
-                    html += `<div class="col"><div class="time">${label}<br><span style="font-size:9px; color:#aaa;">+${i}D</span></div><div class="icon">${icon}</div><div class="temp"><span class="high">${maxT}</span>/<span class="low">${minT}</span></div><div class="precip ${pop>0?'precip-blue':''}">${pop}%</div></div>`;
+                    html += `<div class="col"><div class="time">${label}<br><span style="font-size:9px; color:#aaa;">+${i}D</span></div><div class="icon">${icon}</div><div class="temp"><span class="high">${maxT}</span>/<span class="low">${minT}</span></div><div class="precip ${pop>0?'precip-blue':''}">${pop}</div></div>`;
                 }
                 targetContainer.innerHTML += `<div class="weather-section"><div class="loc-info"><span class="loc-name">${loc.name}</span><span class="loc-sub">${loc.sub}</span></div><div class="grid weekly-grid">${html}</div></div>`;
             }
@@ -506,7 +457,7 @@
                     } catch (e3) {
                         log("3rd failed: " + e3.message);
                         container.innerHTML = `...`; // Error HTML
-                        if(statusSpan) statusSpan.innerText = "错误";
+                        if(statusSpan) statusSpan.innerText = "Error";
                         return;
                     }
                 }
@@ -578,7 +529,7 @@
                     </a>
                 </div>`;
             container.innerHTML = html;
-            if(statusSpan) statusSpan.innerText = "已更新";
+            if(statusSpan) statusSpan.innerText = "Updated";
         }
 
         // 함수 실행 시작
@@ -586,107 +537,6 @@
         initDaily();
         setTimeout(initWeekly, 1000);
         setTimeout(initHallasan, 2000);
-        setTimeout(initDepartureFlights, 2500);
-        setTimeout(initArrivalFlights, 3000);
-
-        function createFlightItemHTML(flight, type) {
-            const rmk = flight.rmk || '';
-            const status = rmk.includes('지연') ? { t: '延误', c: '#ff9800' } : 
-                           rmk.includes('결항') ? { t: '取消', c: '#f44336' } :
-                           { t: rmk, c: '#2e7d32' };
-            
-            const route = type === 'dep' ? `目的地: ${flight.arrAirport}` : `出发地: ${flight.depAirport}`;
-
-            return `
-                <div class="flight-info-item">
-                    <div class="flight-details">
-                        <div class="flight-id-container">
-                            <span class="airline-tag">${flight.airline}</span>
-                            ${flight.flightId}
-                        </div>
-                        <div class="flight-route">${route}</div>
-                    </div>
-                    <div class="flight-status-container">
-                        <div class="flight-time">${flight.scheduledatetime.slice(-4, -2)}:${flight.scheduledatetime.slice(-2)}</div>
-                        <span class="flight-remark" style="color:${status.c};">${status.t}</span>
-                    </div>
-                </div>`;
-        }
-
-        async function fetchFlightData(url, containerId, statusId, type) {
-            const container = document.getElementById(containerId);
-            const statusSpan = document.getElementById(statusId);
-            if (!container || !statusSpan) return;
-
-            // Reverting to allorigins.win proxy as it's more suitable for non-interactive WebView environments
-            const proxyBase = 'https://api.allorigins.win/raw?url=';
-            const proxiedUrl = proxyBase + encodeURIComponent(url);
-            log(`Fetching ${type} flights from: ` + proxiedUrl);
-
-            try {
-                const res = await fetch(proxiedUrl);
-                const text = await res.text();
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(text, "text/xml");
-
-                const resultCodeNode = xmlDoc.querySelector("resultCode");
-                if (!resultCodeNode || resultCodeNode.textContent !== '00') {
-                    const msg = xmlDoc.querySelector("resultMsg")?.textContent || 'Unknown API Error';
-                    throw new Error(msg);
-                }
-
-                const items = xmlDoc.querySelectorAll("item");
-                let relevantFlights = [];
-                items.forEach(item => {
-                    const rmk = item.querySelector("rmk")?.textContent || '';
-                    if (rmk.includes('지연') || rmk.includes('결항')) {
-                        relevantFlights.push({
-                            airline: item.querySelector("airline")?.textContent || '',
-                            flightId: item.querySelector("flightid")?.textContent || '', // Note: 'flightid' in response, not 'flightId'
-                            depAirport: item.querySelector("depAirport")?.textContent || '',
-                            arrAirport: item.querySelector("arrAirport")?.textContent || '',
-                            scheduledatetime: item.querySelector("scheduledatetime")?.textContent || '',
-                            rmk: rmk
-                        });
-                    }
-                });
-
-                if (relevantFlights.length > 0) {
-                    container.innerHTML = '<div style="padding: 10px;">' + relevantFlights.map(f => createFlightItemHTML(f, type)).join('') + '</div>';
-                    statusSpan.innerText = "已更新";
-                } else {
-                    container.innerHTML = `<div style="padding:40px; text-align:center; color:#999; font-size:12px;">目前没有延误或取消的国际航班。</div>`;
-                    statusSpan.innerText = "无延误";
-                }
-            } catch (e) {
-                log(`Flight Status Error (${type}): ${e.message}`);
-                container.innerHTML = `<div style="padding:40px; text-align:center; color:#999; font-size:12px;">获取信息失败: ${e.message}</div>`;
-                statusSpan.innerText = "错误";
-            }
-        }
-
-        async function initDepartureFlights() {
-            const depUrl = `http://openapi.airport.co.kr/service/rest/StatusOfFlights/getDepFlightStatusList?serviceKey=${API_KEY}&airport_code=CJU&line=I&searchday=${todayStr}&from_time=0000&to_time=2359&pageNo=1&numOfRows=100`;
-            await fetchFlightData(depUrl, 'flight-list-dep', 'flight-dep-status', 'dep');
-        }
-
-        async function initArrivalFlights() {
-            const arrUrl = `http://openapi.airport.co.kr/service/rest/StatusOfFlights/getArrFlightStatusList?serviceKey=${API_KEY}&arr_airport_code=CJU&line=I&searchday=${todayStr}&from_time=0000&to_time=2359&pageNo=1&numOfRows=100`;
-            await fetchFlightData(arrUrl, 'flight-list-arr', 'flight-arr-status', 'arr');
-        }
-
-        // 수동 새로고침 함수
-        function refreshDepartureFlights() {
-            const statusSpan = document.getElementById('flight-dep-status');
-            if(statusSpan) statusSpan.innerText = "刷新中...";
-            initDepartureFlights();
-        }
-
-        function refreshArrivalFlights() {
-            const statusSpan = document.getElementById('flight-arr-status');
-            if(statusSpan) statusSpan.innerText = "刷新中...";
-            initArrivalFlights();
-        }
     </script>
 </body>
 </html>
